@@ -27,7 +27,7 @@ openssh/binfiles := \
     bin/openssl \
     libexec/sftp-server
 
-openssh/conffiles := etc/ssh/sshd_config
+openssh/conffiles := etc/sshd_config
 openssh/emptydir := var/empty
 
 # Extra files added in specific versions
@@ -50,9 +50,8 @@ define openssh/build =
 	env PATH='$(host_path)' autoreconf -i
 	./configure LDFLAGS="-static $(LDFLAGS)" LIBS="-lpthread" \
 		--prefix="$(prefix)" \
-		--sysconfdir=/etc/ssh \
-		--with-privsep-path=/var/empty \
-		--with-ssl-dir="$(prefix)" \
+		--with-privsep-user=root \
+		--with-privsep-path=$(prefix)/var/empty \
 		--with-pam=no \
 		--without-xauth \
 		--without-kerberos5 \
@@ -67,7 +66,7 @@ endef
 
 define openssh/install =
 	+'$(MAKE)' -C '$(openssh/dir)' install-nokeys DESTDIR='$(staging_dir)'
-	sed -i 's|^#\?Subsystem.*sftp.*|Subsystem sftp internal-sftp|' '$(staging_dir)/etc/ssh/sshd_config' || true
+	sed -i 's|^#\?Subsystem.*sftp.*|Subsystem sftp internal-sftp|' '$(staging_dir)$(prefix)/etc/sshd_config' || true
 endef
 
 define openssh/package =
