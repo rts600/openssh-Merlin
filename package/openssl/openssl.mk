@@ -21,7 +21,6 @@ openssl/shrink_opts = \
   -Os \
   no-acvp-tests \
   no-afalgeng \
-  no-apps \
   no-argon2 \
   no-aria \
   no-asan \
