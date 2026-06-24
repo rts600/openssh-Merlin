@@ -79,9 +79,9 @@ define openssh/package =
 	# Try compressing with UPX if enabled and available
 	# UPX bails out on SUID files, so remove the bit before and restore it after
 	$(openssh/upx) '$(openssh/upx_test_file)' && {
-	  chmod u-s $(filter %/ssh-keysign,$(openssh/binfiles))
-	  echo $(filter-out $(openssh/upx_test_file),$(openssh/binfiles)) | xargs -n1 $(openssh/upx)
-	  chmod u+s $(filter %/ssh-keysign,$(openssh/binfiles))
+	  f="$(filter %/ssh-keysign,$(openssh/binfiles))"; [ -n "$$f" ] && chmod u-s $$f || true
+	  echo $(filter-out $(openssh/upx_test_file),$(openssh/binfiles)) | xargs -r -n1 $(openssh/upx)
+	  f="$(filter %/ssh-keysign,$(openssh/binfiles))"; [ -n "$$f" ] && chmod u+s $$f || true
 	}
 
 	tar -czf $(openssh/bin) --transform 's|^|$(call shell_checked,echo '$(prefix)' | sed 's|^/*||')/|' \
