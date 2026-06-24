@@ -13,37 +13,21 @@ jobs:
     strategy:
       matrix:
         config:
-          - arch: x86-64
-            config: ARCH=x86-64 PREFIX=/opt/openssh __all__/VERSION=latest
-            description: x86-64
-
-          - arch: x86-64
-            config: ARCH=x86-64 PREFIX=/opt/openssh SHRINK=SHRINK_LEVEL_RUNTIME __all__/VERSION=latest
-            description: x86-64-small
-
-          - arch: armv7-eabihf
-            config: ARCH=armv7-eabihf PREFIX=/system/opt/openssh __all__/VERSION=latest
-            description: armv7-eabihf-android
-
-          - arch: armv7-eabihf
-            config: ARCH=armv7-eabihf PREFIX=/opt/openssh __all__/VERSION=latest
-            description: armv7-eabihf
-
-          - arch: armv7-eabihf
-            config: ARCH=armv7-eabihf PREFIX=/opt/openssh SHRINK=SHRINK_LEVEL_RUNTIME __all__/VERSION=latest
-            description: armv7-eabihf-small
-
           - arch: aarch64
-            config: ARCH=aarch64 PREFIX=/system/opt/openssh __all__/VERSION=latest
-            description: aarch64-android
-
-          - arch: aarch64
-            config: ARCH=aarch64 PREFIX=/opt/openssh __all__/VERSION=latest
+            config: ARCH=aarch64 PREFIX=/usr __all__/VERSION=latest
             description: aarch64
 
           - arch: aarch64
-            config: ARCH=aarch64 PREFIX=/opt/openssh SHRINK=SHRINK_LEVEL_RUNTIME __all__/VERSION=latest
+            config: ARCH=aarch64 PREFIX=/usr SHRINK=SHRINK_LEVEL_RUNTIME __all__/VERSION=latest
             description: aarch64-small
+
+          - arch: armv7-eabihf
+            config: ARCH=armv7-eabihf PREFIX=/usr __all__/VERSION=latest
+            description: armv7-eabihf
+
+          - arch: armv7-eabihf
+            config: ARCH=armv7-eabihf PREFIX=/usr SHRINK=SHRINK_LEVEL_RUNTIME __all__/VERSION=latest
+            description: armv7-eabihf-small
 
     env:
       MAKEFLAGS: SHELL=/usr/bin/bash
