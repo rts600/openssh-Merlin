@@ -21,10 +21,13 @@ openssh/dir = $(build_dir)/openssh/openssh-portable-$(openssh/VERSION)
 openssh/bin = $(bin_dir)/openssh-$(openssh/VERSION).tgz
 openssh/binfiles := \
     sbin/sshd \
-    $(addprefix bin/,ssh scp ssh-add ssh-agent ssh-keygen ssh-keyscan sftp) \
-    $(addprefix libexec/,sftp-server ssh-keysign sshd-session)
+    bin/ssh \
+    bin/scp \
+    bin/ssh-keygen \
+    bin/openssl \
+    libexec/sftp-server
 
-openssh/conffiles := etc/sshd_config
+openssh/conffiles := etc/ssh/sshd_config
 openssh/emptydir := var/empty
 
 # Extra files added in specific versions
@@ -46,13 +49,25 @@ define openssh/build =
 	+cd $(openssh/dir)
 	env PATH='$(host_path)' autoreconf -i
 	./configure LDFLAGS="-static $(LDFLAGS)" LIBS="-lpthread" \
-		--prefix="$(prefix)" --host="$(host_triplet)" --disable-strip \
-		--with-privsep-user=root --with-privsep-path=$(prefix)/var/empty
+		--prefix="$(prefix)" \
+		--sysconfdir=/etc/ssh \
+		--with-privsep-path=/var/empty \
+		--with-ssl-dir="$(prefix)" \
+		--with-pam=no \
+		--without-xauth \
+		--without-kerberos5 \
+		--without-zlib-version-check \
+		--disable-utmp \
+		--disable-utmpx \
+		--disable-wtmp \
+		--disable-lastlog \
+		--host="$(host_triplet)" --disable-strip
 	'$(MAKE)'
 endef
 
 define openssh/install =
 	+'$(MAKE)' -C '$(openssh/dir)' install-nokeys DESTDIR='$(staging_dir)'
+	sed -i 's|^#\?Subsystem.*sftp.*|Subsystem sftp internal-sftp|' '$(staging_dir)/etc/ssh/sshd_config' || true
 endef
 
 define openssh/package =
